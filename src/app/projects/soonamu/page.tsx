@@ -1,8 +1,48 @@
+"use client";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function SoonamuPage() {
     // 헤더 높이(px)
     const HEADER_HEIGHT = 110;
+
+    // 이미지 파일 목록
+    const images = [
+        "/soonamu/1.png",
+        "/soonamu/2.png",
+        "/soonamu/3.png",
+        "/soonamu/4.png",
+        "/soonamu/5.png",
+        "/soonamu/6.png",
+        "/soonamu/7.png",
+        "/soonamu/8.png",
+    ];
+
+    // 두 개의 이미지 슬롯과 현재 활성화된 슬롯을 관리하는 상태
+    const [imageSlots, setImageSlots] = useState([images[0], images[1] || images[0]]);
+    const [activeSlot, setActiveSlot] = useState(0); // 0 또는 1
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    // 1초 간격으로 이미지를 부드럽게 전환
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // 다음 이미지 인덱스 계산
+            const nextIndex = (currentIndex + 1) % images.length;
+            const nextImageSrc = images[nextIndex];
+
+            // 현재 비활성화된 슬롯을 찾아 다음 이미지로 업데이트
+            const inactiveSlot = 1 - activeSlot;
+            const newImageSlots = [...imageSlots];
+            newImageSlots[inactiveSlot] = nextImageSrc;
+            setImageSlots(newImageSlots);
+
+            // 활성 슬롯을 토글하여 페이드 효과 트리거
+            setActiveSlot(inactiveSlot);
+            setCurrentIndex(nextIndex);
+        }, 1500); // 전환 시간을 고려하여 1.5초로 간격 조정 (원하시면 1000ms로 줄여도 됩니다)
+
+        return () => clearInterval(intervalId);
+    }, [currentIndex, activeSlot, images.length, imageSlots]);
 
     return (
         <div className="relative min-h-screen bg-black select-none">
@@ -24,12 +64,13 @@ export default function SoonamuPage() {
             <div
                 className="flex w-full"
                 style={{
-                    paddingTop: HEADER_HEIGHT, // 헤더만큼 아래로 내림
-                    height: `calc(100vh - 0px)`, // 전체 높이
+                    paddingTop: HEADER_HEIGHT,
+                    height: `calc(100vh - 0px)`,
                 }}
             >
                 {/* 본문: 스크롤 가능 */}
                 <main className="flex-1 overflow-y-auto p-8 text-2xl bg-black">
+                    {/* ... (기존 본문 내용과 동일) ... */}
                     <p className="font-bold text-3xl">프로젝트 개요</p>
                     <li className="pl-8 text-2xl">목표 : 난산증 학생을 위한 맞춤형 수학 교육 플랫폼</li>
                     <li className="pl-8 text-2xl">
@@ -111,13 +152,11 @@ export default function SoonamuPage() {
                             </ul>
                         </li>
                     </ul>
-
-
                 </main>
 
-                {/* 이미지: 오른쪽에 고정 */}
+                {/* 이미지: 부드럽게 전환되는 효과 적용 */}
                 <aside
-                    className="w-1/3 hidden lg:flex justify-center items-center p-8"
+                    className="relative w-1/3 hidden lg:flex justify-center items-center p-8" // 부모 요소에 'relative' 추가
                     style={{
                         position: "sticky",
                         top: HEADER_HEIGHT,
@@ -125,14 +164,20 @@ export default function SoonamuPage() {
                         minWidth: 0,
                     }}
                 >
-                    <Image
-                        src="/soonamu/soonamu_1.png"
-                        alt="수나무_1"
-                        className="object-cover rounded-lg"
-                        width={1000}
-                        height={350}
-                        style={{ maxHeight: "100%", maxWidth: "100%" }}
-                    />
+                    {imageSlots.map((src, index) => (
+                        <Image
+                            key={index}
+                            src={src}
+                            alt={`수나무 프로젝트 이미지 슬라이드 ${index + 1}`}
+                            className={`absolute inset-0 object-cover rounded-lg transition-opacity duration-500 ease-in-out ${
+                                activeSlot === index ? 'opacity-100' : 'opacity-0'
+                            }`}
+                            width={1000}
+                            height={350}
+                            priority
+                            style={{ maxHeight: "100%", maxWidth: "100%" }}
+                        />
+                    ))}
                 </aside>
             </div>
         </div>
