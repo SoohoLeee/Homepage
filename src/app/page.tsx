@@ -66,8 +66,8 @@ export default function Portfolio() {
         router.push("/techstack");
     };
 
-    const soonamuClick = () => {
-        router.push("/projects/soonamu");
+    const projectClick = (project: string) => {
+        router.push(`/projects/${project}`);
     };
 
     return (
@@ -174,7 +174,10 @@ export default function Portfolio() {
                         <h2 className="text-4xl font-bold mb-8">Projects.</h2>
                         <div className="space-y-8">
                             <div>
-                                <p className="text-xl">
+                                <p
+                                    className="text-xl cursor-pointer transition-all duration-300 hover:text-blue-400 hover:scale-105 hover:underline hover:shadow-lg"
+                                    onClick={() => projectClick('muinus')}
+                                >
                                     무인 편의점 플랫폼
                                     <br />
                                     Muinus.
@@ -183,7 +186,7 @@ export default function Portfolio() {
                             <div>
                                 <p
                                     className="text-xl cursor-pointer transition-all duration-300 hover:text-blue-400 hover:scale-105 hover:underline hover:shadow-lg"
-                                    onClick={soonamuClick}
+                                    onClick={() => projectClick('soonamu')}
                                 >
                                     난산증 어린이를 위한<br />교육 앱, 수나무.
                                 </p>
