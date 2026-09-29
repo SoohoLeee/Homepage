@@ -1,178 +1,214 @@
-"use client";
-import { useLayoutEffect, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import { projects } from "@/data/projects";
+import { techStacks } from "@/data/techStacks";
 
-export default function Portfolio() {
-    const heroRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
+const EMAIL = "soohobiz96@gmail.com";
 
-    // 첫 페인트 전에 초기 상태를 적용해 콘텐츠가 번쩍이지 않도록 useLayoutEffect 사용
-    useLayoutEffect(() => {
-        // 모션 최소화 설정 사용자는 스크롤 애니메이션 없이 모든 콘텐츠를 그대로 노출
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-        const fadeEnd = 200;
-        let ticking = false;
-
-        const update = () => {
-            const progress = Math.max(0, Math.min(1, window.scrollY / fadeEnd));
-
-            // Hero 섹션: 스크롤할수록 사라짐
-            if (heroRef.current) {
-                heroRef.current.style.opacity = (1 - progress).toString();
-                heroRef.current.style.transform = `translateY(${progress * 40}px)`;
-                heroRef.current.style.pointerEvents = progress > 0.9 ? "none" : "auto";
-            }
-
-            // Content 섹션: 스크롤할수록 나타남 (거의 투명할 때는 클릭 방지)
-            if (contentRef.current) {
-                contentRef.current.style.opacity = progress.toString();
-                contentRef.current.style.transform = `translateY(${40 - progress * 40}px)`;
-                contentRef.current.style.pointerEvents = progress < 0.1 ? "none" : "auto";
-            }
-
-            ticking = false;
-        };
-
-        const handleScroll = () => {
-            if (!ticking) {
-                window.requestAnimationFrame(update);
-                ticking = true;
-            }
-        };
-
-        update();
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
+// 단어 단위로 순차 등장하는 제목 (키네틱 타이포그래피)
+function KineticLine({ words, startDelay, className = "" }: { words: string[]; startDelay: number; className?: string }) {
     return (
-        <div>
+        <span className="block">
+            {words.map((word, i) => (
+                <span
+                    key={word}
+                    className={`kinetic-word mr-[0.25em] ${className}`}
+                    style={{ animationDelay: `${startDelay + i * 90}ms` }}
+                >
+                    {word}
+                </span>
+            ))}
+        </span>
+    );
+}
+
+function CardLabel({ children }: { children: React.ReactNode }) {
+    return <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">{children}</p>;
+}
+
+function Arrow() {
+    return (
+        <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+            →
+        </span>
+    );
+}
+
+export default function Home() {
+    return (
+        <main className="mx-auto max-w-6xl px-4 sm:px-6">
             {/* Hero 섹션 */}
-            <div
-                ref={heroRef}
-                className="flex flex-col md:flex-row items-start md:items-center justify-center md:justify-start gap-6 min-h-screen px-6 md:px-16 select-none"
-            >
-                <Image
-                    src="/selfie.png"
-                    alt="이수호 프로필 사진"
-                    className="object-cover rounded-lg w-40 h-40 md:w-[300px] md:h-[300px]"
-                    width={300}
-                    height={300}
-                    sizes="(max-width: 768px) 160px, 300px"
-                    priority
-                />
+            <section className="flex min-h-svh flex-col justify-center gap-10 py-24 md:flex-row md:items-center md:justify-start md:gap-14">
+                <div className="fade-up relative shrink-0" style={{ animationDelay: "100ms" }}>
+                    <div className="absolute -inset-3 rounded-full bg-accent/20 blur-2xl" aria-hidden="true" />
+                    <Image
+                        src="/selfie.png"
+                        alt="이수호 프로필 사진"
+                        className="relative h-36 w-36 rounded-full border border-line-strong object-cover md:h-60 md:w-60"
+                        width={240}
+                        height={240}
+                        sizes="(max-width: 768px) 144px, 240px"
+                        priority
+                    />
+                </div>
+
                 <div>
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold">
-                        Hi, I am
-                        <br /> Sooho Lee.
-                    </h1>
-                    <h2 className="text-2xl md:text-4xl font-bold">Frontend Engineer</h2>
-                </div>
-            </div>
-
-            {/* 콘텐츠 섹션: JS 없이도 보이도록 기본값은 표시 상태, 애니메이션은 effect에서 적용 */}
-            <div ref={contentRef} className="min-h-screen p-6 select-none">
-                {/* About 섹션 */}
-                <div className="mb-4">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-4">About</h2>
-                    <hr className="border-white border-2" />
-                </div>
-
-                <div className="mb-16">
-                    <p className="text-2xl md:text-4xl font-bold leading-relaxed">
-                        Backend, Frontend, Designer를 잇는 소통의 다리,
-                        <br />
-                        협업을 완성하는 프론트엔드 개발자입니다.
-                    </p>
-                </div>
-
-                {/* 카드 그리드 */}
-                <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
-                    {/* Contacts 카드 */}
-                    <div className="w-full sm:w-[250px] h-[320px] bg-black rounded-lg p-8 border border-gray-600">
-                        <h2 className="text-4xl font-bold mb-8">Contacts.</h2>
-                        <div className="space-y-6">
-                            <div>
-                                <p className="text-xl mb-2">e-mail :</p>
-                                <a
-                                    href="mailto:soohobiz96@gmail.com"
-                                    className="text-xl select-text hover:text-blue-400 hover:underline"
-                                >
-                                    soohobiz96@
-                                    <br />
-                                    gmail.com
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Edu 카드 */}
-                    <div className="w-full sm:w-[250px] h-[320px] bg-black rounded-lg p-8 border border-gray-600">
-                        <h2 className="text-4xl font-bold mb-8">Edu.</h2>
-                        <div className="space-y-8">
-                            <div>
-                                <p className="text-xl">
-                                    SSAFY 12th
-                                    <br />
-                                    Certificate.
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-xl">
-                                    Chung-Ang
-                                    <br />
-                                    University
-                                    <br />
-                                    Business
-                                    <br />
-                                    Administration.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Projects 카드 */}
-                    <div className="w-full sm:w-[250px] h-[320px] bg-black rounded-lg p-8 border border-gray-600 relative">
-                        <h2 className="text-4xl font-bold mb-8">Projects.</h2>
-                        <ul className="space-y-8">
-                            <li>
-                                <Link
-                                    href="/projects/muinus"
-                                    className="block text-xl transition-all duration-300 hover:text-blue-400 hover:scale-105 hover:underline focus-visible:text-blue-400 focus-visible:underline"
-                                >
-                                    무인 편의점 플랫폼
-                                    <br />
-                                    Muinus.
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/projects/soonamu"
-                                    className="block text-xl transition-all duration-300 hover:text-blue-400 hover:scale-105 hover:underline focus-visible:text-blue-400 focus-visible:underline"
-                                >
-                                    난산증 어린이를 위한<br />교육 앱, 수나무.
-                                </Link>
-                            </li>
-                        </ul>
-                        <div className="absolute bottom-4 right-4">
-                            <p className="text-sm text-gray-400">click each project for more info</p>
-                        </div>
-                    </div>
-
-                    {/* Tech Stack 카드 */}
-                    <Link
-                        href="/techstack"
-                        className="block w-full sm:w-[250px] h-[320px] bg-black rounded-lg p-8 border border-gray-600 relative transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-105 focus-visible:shadow-xl focus-visible:shadow-white/20"
+                    <p
+                        className="fade-up mb-5 inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-sm text-muted"
+                        style={{ animationDelay: "200ms" }}
                     >
-                        <h2 className="text-4xl font-bold mb-8">Tech Stack.</h2>
-                        <div className="absolute bottom-4 right-4">
-                            <p className="text-sm text-gray-400">click here for more info</p>
-                        </div>
-                    </Link>
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent-2" aria-hidden="true" />
+                        Frontend Engineer
+                    </p>
+                    <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-8xl">
+                        <KineticLine words={["Hi,", "I", "am"]} startDelay={300} />
+                        <KineticLine words={["Sooho", "Lee."]} startDelay={570} className="shimmer" />
+                    </h1>
+                    <div className="fade-up mt-10 flex flex-wrap gap-3" style={{ animationDelay: "900ms" }}>
+                        <a
+                            href="#about"
+                            className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent"
+                        >
+                            포트폴리오 둘러보기
+                        </a>
+                        <a
+                            href={`mailto:${EMAIL}`}
+                            className="rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium transition hover:border-accent hover:text-accent"
+                        >
+                            메일 보내기
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            {/* About - 벤토 그리드 */}
+            <section id="about" className="scroll-mt-8 pb-24">
+                <Reveal>
+                    <h2 className="mb-8 text-sm font-medium uppercase tracking-[0.25em] text-muted">About</h2>
+                </Reveal>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+                    {/* 소개 */}
+                    <Reveal className="md:col-span-4">
+                        <div className="surface flex h-full flex-col justify-between gap-10 p-8">
+                            <CardLabel>Intro</CardLabel>
+                            <p className="text-2xl font-medium leading-snug md:text-3xl">
+                                Backend, Frontend, Designer를 잇는
+                                <span className="text-accent"> 소통의 다리</span>,
+                                <br className="hidden md:block" />
+                                협업을 완성하는 프론트엔드 개발자입니다.
+                            </p>
+                        </div>
+                    </Reveal>
+
+                    {/* 연락처 */}
+                    <Reveal className="md:col-span-2" delay={80}>
+                        <a
+                            href={`mailto:${EMAIL}`}
+                            className="surface group flex h-full flex-col justify-between gap-10 p-8 transition hover:border-line-strong hover:bg-surface-hover"
+                        >
+                            <CardLabel>Contact</CardLabel>
+                            <div>
+                                <p className="break-all text-lg">{EMAIL}</p>
+                                <p className="mt-3 text-sm text-accent">
+                                    메일 보내기 <Arrow />
+                                </p>
+                            </div>
+                        </a>
+                    </Reveal>
+
+                    {/* 프로젝트 카드 */}
+                    {projects.map((project, i) => (
+                        <Reveal key={project.slug} className="md:col-span-3" delay={i * 80}>
+                            <Link
+                                href={`/projects/${project.slug}`}
+                                className="surface group flex h-full flex-col overflow-hidden transition hover:border-line-strong hover:bg-surface-hover"
+                            >
+                                <div className="relative h-64 overflow-hidden border-b border-line md:h-80">
+                                    <Image
+                                        src={project.thumbnail}
+                                        alt={`${project.title} 서비스 화면`}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        className="object-cover object-top transition duration-700 group-hover:scale-[1.03]"
+                                    />
+                                </div>
+                                <div className="flex flex-1 flex-col gap-4 p-8">
+                                    <div className="flex items-center justify-between gap-4">
+                                        <CardLabel>Project 0{i + 1}</CardLabel>
+                                        <span className="text-xs text-muted">{project.period}</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-semibold">{project.title}</h3>
+                                        <p className="mt-1 text-muted">{project.summary}</p>
+                                    </div>
+                                    <div className="mt-auto flex items-center justify-between gap-4 pt-2">
+                                        <ul className="flex gap-2">
+                                            {project.stack.map((tech) => (
+                                                <li key={tech} className="rounded-full border border-line px-3 py-1 text-xs text-muted">
+                                                    {tech}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <span className="text-sm text-accent">
+                                            자세히 보기 <Arrow />
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </Reveal>
+                    ))}
+
+                    {/* 학력 */}
+                    <Reveal className="md:col-span-2">
+                        <div className="surface flex h-full flex-col gap-8 p-8">
+                            <CardLabel>Education</CardLabel>
+                            <ul className="space-y-6">
+                                <li>
+                                    <p className="text-lg font-medium">SSAFY 12th</p>
+                                    <p className="text-sm text-muted">Certificate</p>
+                                </li>
+                                <li>
+                                    <p className="text-lg font-medium">Chung-Ang University</p>
+                                    <p className="text-sm text-muted">Business Administration</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </Reveal>
+
+                    {/* 기술 스택 */}
+                    <Reveal className="md:col-span-4" delay={80}>
+                        <Link
+                            href="/techstack"
+                            className="surface group flex h-full flex-col justify-between gap-8 p-8 transition hover:border-line-strong hover:bg-surface-hover"
+                        >
+                            <div className="flex items-center justify-between gap-4">
+                                <CardLabel>Tech Stack</CardLabel>
+                                <span className="text-sm text-accent">
+                                    전체 보기 <Arrow />
+                                </span>
+                            </div>
+                            <ul className="grid grid-cols-3 gap-6 sm:grid-cols-6">
+                                {techStacks.map((tech) => (
+                                    <li key={tech.name} className="flex flex-col items-center gap-3">
+                                        <Image
+                                            src={tech.icon}
+                                            alt=""
+                                            width={48}
+                                            height={48}
+                                            className="h-12 w-12 object-contain opacity-80 transition group-hover:opacity-100"
+                                        />
+                                        <span className="text-xs text-muted">{tech.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Link>
+                    </Reveal>
+                </div>
+            </section>
+
+            <footer className="border-t border-line py-10 text-sm text-muted">© Sooho Lee</footer>
+        </main>
     );
 }

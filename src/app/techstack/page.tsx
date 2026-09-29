@@ -1,56 +1,44 @@
+import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import SiteNav from "@/components/SiteNav";
+import { techStacks } from "@/data/techStacks";
 
-// 기술 스택 목록 (bordered: 아이콘 테두리 표시 여부, level: 숙련도 별 개수)
-const techStacks = [
-    { name: "JavaScript", icon: "/icon/NoBg_JS2.png", bordered: true, level: 3 },
-    { name: "TypeScript", icon: "/icon/NoBg_TS2.png", bordered: true, level: 3 },
-    { name: "React", icon: "/icon/NoBg_React.png", bordered: false, level: 3 },
-    { name: "Dart", icon: "/icon/NoBg_Dart.png", bordered: false, level: 3 },
-    { name: "Flutter", icon: "/icon/NoBg_Flutter2.png", bordered: false, level: 4 },
-    { name: "Figma", icon: "/icon/NoBg_Figma2.png", bordered: false, level: 4 },
-];
+export const metadata: Metadata = {
+    title: "Tech Stack",
+    description: "이수호가 사용하는 기술과 숙련도",
+};
 
 export default function TechStackPage() {
     return (
-        <div className="min-h-screen p-6 select-none flex flex-col">
-            {/* 제목과 구분선 */}
-            <div className="mb-4">
-                <Link href="/" className="inline-block mb-2 text-lg text-gray-400 hover:text-white hover:underline">
-                    ← Home
-                </Link>
-                <h1 className="text-4xl md:text-6xl font-bold mb-4">Tech Stack</h1>
-                <hr className="border-white border-2" />
-            </div>
+        <div className="min-h-svh">
+            <SiteNav />
 
-            {/* 기술 스택 그리드 - 중앙 정렬 */}
-            <div className="flex-1 flex items-center justify-center">
-                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-                    {techStacks.map(({ name, icon, bordered, level }) => (
-                        <li key={name} className="flex flex-col items-center space-y-4">
-                            <div
-                                className={`w-24 h-24 flex items-center justify-center ${
-                                    bordered ? "border-4 border-white rounded-lg" : ""
-                                }`}
-                            >
-                                <Image
-                                    src={icon}
-                                    alt={`${name} 아이콘`}
-                                    width={96}
-                                    height={96}
-                                    className="max-w-full h-auto"
-                                />
-                            </div>
-                            <h2 className="text-xl font-semibold">{name}</h2>
-                            <div className="flex space-x-1" role="img" aria-label={`숙련도 ${level}점`}>
-                                {Array.from({ length: level }, (_, i) => (
-                                    <span key={i} className="text-2xl" aria-hidden="true">★</span>
-                                ))}
-                            </div>
+            <main className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+                <header className="fade-up py-16 md:py-20">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Skills</p>
+                    <h1 className="mt-4 text-5xl font-semibold tracking-tight md:text-7xl">Tech Stack</h1>
+                    <p className="mt-4 text-lg text-muted">별 개수는 스스로 평가한 숙련도입니다.</p>
+                </header>
+
+                <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    {techStacks.map(({ name, icon, level }, i) => (
+                        <li key={name}>
+                            <Reveal delay={i * 60} className="h-full">
+                                <div className="surface flex h-full flex-col items-start gap-6 p-6 transition hover:border-line-strong hover:bg-surface-hover sm:p-8">
+                                    <Image src={icon} alt="" width={56} height={56} className="h-14 w-14 object-contain" />
+                                    <div className="w-full">
+                                        <h2 className="text-xl font-semibold">{name}</h2>
+                                        <p className="mt-2 text-accent" role="img" aria-label={`숙련도 별 ${level}개`}>
+                                            {"★".repeat(level)}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Reveal>
                         </li>
                     ))}
                 </ul>
-            </div>
+            </main>
         </div>
     );
 }
