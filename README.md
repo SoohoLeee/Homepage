@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sooho Lee · Portfolio
 
-## Getting Started
+프론트엔드 개발자 **이수호**의 개인 포트폴리오 웹사이트입니다.
+자기소개, 연락처, 학력, 프로젝트, 기술 스택을 한 곳에서 보여줍니다.
 
-First, run the development server:
+## 페이지 구성
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| 경로 | 내용 |
+| --- | --- |
+| `/` | 메인 페이지. 스크롤에 따라 전환되는 히어로 섹션과 About, Contacts, Edu, Projects, Tech Stack 카드 |
+| `/projects/muinus` | **Muinus** – 무인 편의점 플랫폼 (React). 프로젝트 개요, 역할, 기여 내용, 시연 영상 |
+| `/projects/soonamu` | **수나무** – 난산증 어린이를 위한 교육 앱 (Flutter). 프로젝트 개요, 역할, 기여 내용, 앱 화면 슬라이드 |
+| `/techstack` | 사용 기술과 숙련도 (JavaScript, TypeScript, React, Dart, Flutter, Figma) |
+
+## 기술 스택
+
+- **Framework**: Next.js 15 (App Router), React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Font**: Geist (`next/font`)
+
+## 프로젝트 구조
+
+```
+src/
+├── app/
+│   ├── layout.tsx            # 공통 레이아웃, 메타데이터
+│   ├── page.tsx              # 메인 페이지
+│   ├── globals.css           # 전역 스타일
+│   ├── techstack/page.tsx    # 기술 스택 페이지
+│   └── projects/
+│       ├── muinus/page.tsx   # Muinus 프로젝트 상세
+│       └── soonamu/page.tsx  # 수나무 프로젝트 상세
+└── components/
+    └── ProjectLayout.tsx     # 프로젝트 상세 페이지 공통 레이아웃
+public/
+├── selfie.png                # 프로필 사진
+├── icon/                     # 기술 스택 아이콘
+├── muinus/                   # Muinus 시연 영상
+└── soonamu/                  # 수나무 앱 화면
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 실행 방법
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install     # 의존성 설치
+npm run dev     # 개발 서버 실행 (http://localhost:3000)
+npm run build   # 프로덕션 빌드
+npm run start   # 빌드 결과 실행
+npm run lint    # 린트 검사
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 연락처
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- E-mail: soohobiz96@gmail.com
