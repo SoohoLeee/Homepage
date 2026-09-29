@@ -74,7 +74,7 @@ export default function MuinusPage() {
                 <li>
                     <span className="font-bold">핵심 기능 :</span>
                     <div className="mt-2">
-                        <table className="min-w-max table-auto border border-gray-300 text-xl">
+                        <table className="table-auto border border-gray-300 text-xl">
                             <tbody>
                             <tr>
                                 <td className="border px-4 py-2 text-center">위치 기반 매장 검색</td>

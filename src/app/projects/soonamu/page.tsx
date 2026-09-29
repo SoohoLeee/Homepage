@@ -30,7 +30,8 @@ function ImageSlideshow() {
     }, []);
 
     return (
-        <>
+        // aside 패딩 안쪽을 기준으로 이미지를 겹쳐 배치하기 위한 래퍼
+        <div className="relative w-full h-full">
             {images.map((src, index) => (
                 <Image
                     key={src}
@@ -46,7 +47,7 @@ function ImageSlideshow() {
                     style={{ maxHeight: "100%", maxWidth: "100%" }}
                 />
             ))}
-        </>
+        </div>
     );
 }
 
@@ -68,7 +69,7 @@ export default function SoonamuPage() {
                 <li>
                     <span className="font-bold">핵심 기능 :</span>
                     <div className="mt-2">
-                        <table className="min-w-max table-auto border border-gray-300 text-xl">
+                        <table className="table-auto border border-gray-300 text-xl">
                             <tbody>
                             <tr>
                                 <td className="border px-4 py-2 text-center">숫자 인식 기능</td>
