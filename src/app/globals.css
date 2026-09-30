@@ -39,6 +39,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* 페이지 내 링크(#about 등) 이동 시 부드럽게 스크롤 (모션 최소화 설정이면 즉시 이동) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 ::selection {
   background: rgb(200 182 255 / 0.3);
 }
